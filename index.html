@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joe & Floyd — Memory Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f13; color: #e2e2e8; min-height: 100vh; padding: 24px; }
+  h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .card { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 20px; }
+  .card-title { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+  .metric { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1f1f2e; }
+  .metric:last-child { border-bottom: none; }
+  .metric-label { font-size: 14px; color: #aaa; }
+  .metric-value { font-size: 14px; font-weight: 600; color: #fff; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .badge-green { background: #0d2e1a; color: #4ade80; }
+  .badge-yellow { background: #2a1e00; color: #fbbf24; }
+  .badge-blue { background: #0d1e2e; color: #60a5fa; }
+  .badge-gray { background: #1e1e2e; color: #888; }
+  .project-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1f1f2e; gap: 12px; }
+  .project-row:last-child { border-bottom: none; }
+  .project-name { font-size: 14px; color: #e2e2e8; font-weight: 500; }
+  .project-meta { font-size: 12px; color: #555; margin-top: 2px; }
+  .todo-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1a1a28; }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-check { width: 16px; height: 16px; border: 1.5px solid #444; border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+  .todo-text { font-size: 13px; color: #bbb; line-height: 1.4; }
+  .log-row { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #1f1f2e; }
+  .log-row:last-child { border-bottom: none; }
+  .log-date { font-size: 12px; color: #555; flex-shrink: 0; width: 90px; padding-top: 2px; }
+  .log-content { font-size: 13px; color: #bbb; line-height: 1.5; }
+  .log-tag { display: inline-block; background: #1e1e2e; color: #666; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin-right: 4px; margin-top: 4px; }
+  .rev-bar-wrap { margin-top: 10px; }
+  .rev-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .rev-label { font-size: 12px; color: #666; width: 80px; flex-shrink: 0; }
+  .rev-bar-bg { flex: 1; background: #1f1f2e; border-radius: 4px; height: 6px; overflow: hidden; }
+  .rev-bar { height: 6px; border-radius: 4px; background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+  .rev-val { font-size: 12px; color: #888; width: 60px; text-align: right; flex-shrink: 0; }
+  .stat-big { font-size: 28px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 4px; }
+  .stat-sub { font-size: 12px; color: #555; }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 18px; }
+  .divider { height: 1px; background: #1f1f2e; margin: 6px 0; }
+  .decision-row { padding: 10px 0; border-bottom: 1px solid #1f1f2e; }
+  .decision-row:last-child { border-bottom: none; }
+  .decision-text { font-size: 13px; color: #bbb; line-height: 1.4; }
+  .decision-date { font-size: 11px; color: #444; margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<h1>📋 Joe & Floyd — Command Center</h1>
+<p class="subtitle">Updated: 2026-03-24 · AI Automation Agency → Micro-SaaS</p>
+
+<!-- Stat cards -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-sub">Revenue (MTD)</div>
+    <div class="stat-big">$0</div>
+    <div class="stat-sub">Target: $500 by Apr</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-sub">Active Clients</div>
+    <div class="stat-big">0</div>
+    <div class="stat-sub">Target: 1 by end of April</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-sub">Days Active</div>
+    <div class="stat-big">1</div>
+    <div class="stat-sub">Since 2026-03-24</div>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- Projects -->
+  <div class="card">
+    <div class="card-title">Active Projects</div>
+    <div class="project-row">
+      <div>
+        <div class="project-name">AI Automation Agency</div>
+        <div class="project-meta">Phase 1 · Niche: Marketing agencies &amp; SMBs</div>
+      </div>
+      <span class="badge badge-yellow">🟡 Planning</span>
+    </div>
+    <div class="project-row">
+      <div>
+        <div class="project-name">Micro-SaaS</div>
+        <div class="project-meta">Phase 2 · Starts month 4</div>
+      </div>
+      <span class="badge badge-gray">⏳ Pending</span>
+    </div>
+    <div class="project-row">
+      <div>
+        <div class="project-name">OpenClaw Infrastructure</div>
+        <div class="project-meta">Telegram, security, weekly audits</div>
+      </div>
+      <span class="badge badge-green">✅ Done</span>
+    </div>
+  </div>
+
+  <!-- Open Items -->
+  <div class="card">
+    <div class="card-title">Open Items</div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Register domain for AI agency</div></div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Optimize LinkedIn profile for agency positioning</div></div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Set up Cal.com + Stripe</div></div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Start outreach — 20 connections/day</div></div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Write 3 cold email templates</div></div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Verify VPS firewall rules (Hostinger panel)</div></div>
+    <div class="todo-item"><div class="todo-check"></div><div class="todo-text">Enable VPS snapshots in Hostinger</div></div>
+  </div>
+
+  <!-- Revenue Targets -->
+  <div class="card">
+    <div class="card-title">Revenue Targets</div>
+    <div class="rev-bar-wrap">
+      <div class="rev-row">
+        <div class="rev-label">Mar 2026</div>
+        <div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div>
+        <div class="rev-val">$0 / $0</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-label">Apr 2026</div>
+        <div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div>
+        <div class="rev-val">$0 / $500</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-label">May 2026</div>
+        <div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div>
+        <div class="rev-val">$0 / $2,500</div>
+      </div>
+      <div class="rev-row">
+        <div class="rev-label">Jun 2026</div>
+        <div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div>
+        <div class="rev-val">$0 / $5,000</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="metric">
+      <span class="metric-label">Annual target</span>
+      <span class="metric-value">$1,000,000</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Monthly target</span>
+      <span class="metric-value">$83,333</span>
+    </div>
+  </div>
+
+  <!-- Daily Log -->
+  <div class="card">
+    <div class="card-title">Daily Log</div>
+    <div class="log-row">
+      <div class="log-date">2026-03-24</div>
+      <div class="log-content">
+        First session. Full onboarding: identity set, Telegram connected, security hardened, business plan created. AI Agency + SaaS path chosen.
+        <div><span class="log-tag">onboarding</span><span class="log-tag">security</span><span class="log-tag">business-plan</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Decisions -->
+  <div class="card">
+    <div class="card-title">Key Decisions</div>
+    <div class="decision-row">
+      <div class="decision-text">AI Agency as Phase 1 — fastest cash, Floyd's background = the product</div>
+      <div class="decision-date">2026-03-24</div>
+    </div>
+    <div class="decision-row">
+      <div class="decision-text">Micro-SaaS as Phase 2 — most scalable, funded by agency revenue</div>
+      <div class="decision-date">2026-03-24</div>
+    </div>
+    <div class="decision-row">
+      <div class="decision-text">Niche: marketing agencies + digital SMBs (5–50 employees)</div>
+      <div class="decision-date">2026-03-24</div>
+    </div>
+    <div class="decision-row">
+      <div class="decision-text">Lead offer: $500 Automation Audit → upsell to retainer</div>
+      <div class="decision-date">2026-03-24</div>
+    </div>
+    <div class="decision-row">
+      <div class="decision-text">Faceless content eliminated — too slow, $1M path too uncertain</div>
+      <div class="decision-date">2026-03-24</div>
+    </div>
+  </div>
+
+  <!-- Infrastructure -->
+  <div class="card">
+    <div class="card-title">Infrastructure Status</div>
+    <div class="metric"><span class="metric-label">OpenClaw</span><span class="badge badge-green">✅ 2026.3.23-2</span></div>
+    <div class="metric"><span class="metric-label">Telegram</span><span class="badge badge-green">✅ Connected</span></div>
+    <div class="metric"><span class="metric-label">API key permissions</span><span class="badge badge-green">✅ 600</span></div>
+    <div class="metric"><span class="metric-label">Log redaction</span><span class="badge badge-green">✅ Active</span></div>
+    <div class="metric"><span class="metric-label">Weekly security audit</span><span class="badge badge-green">✅ Scheduled</span></div>
+    <div class="metric"><span class="metric-label">VPS firewall</span><span class="badge badge-yellow">⚠️ Unverified</span></div>
+    <div class="metric"><span class="metric-label">VPS backups</span><span class="badge badge-yellow">⚠️ Not configured</span></div>
+  </div>
+
+</div>
+
+</body>
+</html>
