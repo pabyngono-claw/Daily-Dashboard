@@ -6,365 +6,610 @@
 <title>Joe & Floyd — Command Center</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f13; color: #e2e2e8; min-height: 100vh; padding: 24px; }
-  h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-  .subtitle { font-size: 13px; color: #555; margin-bottom: 28px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 16px; }
-  .grid-wide { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .card { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 20px; }
-  .card-title { font-size: 11px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .stat-card { background: #1a1a24; border: 1px solid #2a2a3a; border-radius: 12px; padding: 18px; }
-  .stat-big { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 4px; }
-  .stat-sub { font-size: 11px; color: #555; }
-  .stat-sub2 { font-size: 11px; color: #444; margin-top: 3px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0f; color: #e2e2e8; min-height: 100vh; display: flex; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px; min-height: 100vh; background: #111118; border-right: 1px solid #1e1e2e;
+    display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+  }
+  .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid #1e1e2e; }
+  .sidebar-logo h2 { font-size: 15px; font-weight: 700; color: #fff; }
+  .sidebar-logo p { font-size: 11px; color: #444; margin-top: 2px; }
+  .sidebar-section-label { font-size: 10px; font-weight: 600; color: #333; text-transform: uppercase; letter-spacing: 0.1em; padding: 16px 20px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 20px;
+    font-size: 13px; color: #666; cursor: pointer; border-radius: 0;
+    transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: #aaa; background: #15151f; }
+  .nav-item.active { color: #e2e2e8; background: #15151f; border-left-color: #6366f1; }
+  .nav-item .icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+  .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid #1e1e2e; font-size: 11px; color: #333; }
+
+  /* ── Main ── */
+  .main { margin-left: 220px; flex: 1; padding: 28px 28px 40px; min-height: 100vh; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .page-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: #444; margin-bottom: 24px; }
+
+  /* ── Cards & Grid ── */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: #13131c; border: 1px solid #1e1e2e; border-radius: 12px; padding: 20px; }
+  .card-title { font-size: 11px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .divider { height: 1px; background: #1a1a28; margin: 12px 0; }
+
+  /* ── Stat tiles ── */
+  .stat-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .tile { background: #13131c; border: 1px solid #1e1e2e; border-radius: 12px; padding: 18px; }
+  .tile-val { font-size: 28px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 4px; }
+  .tile-label { font-size: 11px; color: #444; }
+  .tile-sub { font-size: 11px; color: #333; margin-top: 3px; }
+
+  /* ── Badges ── */
   .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
-  .badge-green { background: #0d2e1a; color: #4ade80; }
+  .badge-green  { background: #0d2e1a; color: #4ade80; }
   .badge-yellow { background: #2a1e00; color: #fbbf24; }
-  .badge-blue { background: #0d1e2e; color: #60a5fa; }
-  .badge-gray { background: #1e1e2e; color: #666; }
+  .badge-blue   { background: #0d1e2e; color: #60a5fa; }
+  .badge-gray   { background: #1a1a28; color: #555; }
   .badge-purple { background: #1a0d2e; color: #a78bfa; }
-  .metric { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #1f1f2e; }
+  .badge-red    { background: #2e0d0d; color: #f87171; }
+
+  /* ── Metric rows ── */
+  .metric { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #1a1a28; }
   .metric:last-child { border-bottom: none; }
-  .metric-label { font-size: 13px; color: #888; }
-  .metric-value { font-size: 13px; font-weight: 600; color: #fff; }
-  .divider { height: 1px; background: #1f1f2e; margin: 10px 0; }
+  .metric-label { font-size: 13px; color: #777; }
+  .metric-value { font-size: 13px; font-weight: 600; color: #e2e2e8; }
 
-  /* Projects */
-  .project-block { padding: 14px 0; border-bottom: 1px solid #1a1a28; }
-  .project-block:last-child { border-bottom: none; }
-  .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  /* ── Progress bars ── */
+  .prog-wrap { margin: 8px 0; }
+  .prog-header { display: flex; justify-content: space-between; font-size: 11px; color: #444; margin-bottom: 5px; }
+  .prog-bg { background: #1a1a28; border-radius: 4px; height: 5px; overflow: hidden; }
+  .prog-bar { height: 5px; border-radius: 4px; background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+
+  /* ── Project blocks ── */
+  .project-block { padding: 16px 0; border-bottom: 1px solid #1a1a28; }
+  .project-block:first-child { padding-top: 0; }
+  .project-block:last-child { border-bottom: none; padding-bottom: 0; }
+  .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
   .project-name { font-size: 14px; font-weight: 600; color: #e2e2e8; }
-  .project-desc { font-size: 12px; color: #555; margin-top: 2px; }
+  .project-desc { font-size: 12px; color: #444; margin-top: 2px; }
+  .milestone-row { display: flex; gap: 5px; flex-wrap: wrap; margin: 8px 0; }
+  .ms { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+  .ms.done { background: #0d2e1a; color: #4ade80; }
+  .ms.todo { background: #1a1a28; color: #333; }
   .task-list { margin-top: 8px; }
-  .task-item { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; }
-  .task-check { width: 14px; height: 14px; border: 1.5px solid #333; border-radius: 3px; flex-shrink: 0; margin-top: 1px; }
-  .task-check.done { background: #4ade80; border-color: #4ade80; }
-  .task-text { font-size: 12px; color: #888; line-height: 1.4; }
-  .task-text.done { color: #444; text-decoration: line-through; }
-  .progress-wrap { margin-top: 8px; }
-  .progress-bg { background: #1f1f2e; border-radius: 4px; height: 4px; overflow: hidden; margin-top: 4px; }
-  .progress-bar { height: 4px; border-radius: 4px; background: linear-gradient(90deg, #6366f1, #8b5cf6); }
-  .milestone-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .milestone { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
-  .milestone.done { background: #0d2e1a; color: #4ade80; }
-  .milestone.pending { background: #1e1e2e; color: #444; }
+  .task { display: flex; align-items: flex-start; gap: 8px; padding: 3px 0; }
+  .chk { width: 14px; height: 14px; border: 1.5px solid #2a2a3a; border-radius: 3px; flex-shrink: 0; margin-top: 1px; }
+  .chk.done { background: #4ade80; border-color: #4ade80; }
+  .task-text { font-size: 12px; color: #777; }
+  .task-text.done { color: #333; text-decoration: line-through; }
 
-  /* Token usage */
-  .usage-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a1a28; }
-  .usage-row:last-child { border-bottom: none; }
-  .usage-date { font-size: 12px; color: #555; width: 90px; flex-shrink: 0; }
-  .usage-label { font-size: 13px; color: #aaa; flex: 1; }
-  .usage-cost { font-size: 13px; font-weight: 600; color: #a78bfa; }
-  .token-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .token-label { font-size: 11px; color: #555; width: 90px; flex-shrink: 0; }
-  .token-bar-bg { flex: 1; background: #1f1f2e; border-radius: 4px; height: 6px; overflow: hidden; }
-  .token-bar { height: 6px; border-radius: 4px; }
-  .token-val { font-size: 11px; color: #666; width: 70px; text-align: right; flex-shrink: 0; }
+  /* ── Token bars ── */
+  .tok-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tok-label { font-size: 12px; color: #444; width: 100px; flex-shrink: 0; }
+  .tok-bg { flex: 1; background: #1a1a28; border-radius: 4px; height: 6px; overflow: hidden; }
+  .tok-bar { height: 6px; border-radius: 4px; }
+  .tok-val { font-size: 12px; color: #555; width: 90px; text-align: right; flex-shrink: 0; }
 
-  /* Revenue */
+  /* ── Revenue bars ── */
   .rev-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .rev-label { font-size: 12px; color: #666; width: 80px; flex-shrink: 0; }
-  .rev-bar-bg { flex: 1; background: #1f1f2e; border-radius: 4px; height: 6px; overflow: hidden; }
+  .rev-label { font-size: 12px; color: #555; width: 80px; flex-shrink: 0; }
+  .rev-bg { flex: 1; background: #1a1a28; border-radius: 4px; height: 6px; overflow: hidden; }
   .rev-bar { height: 6px; border-radius: 4px; background: linear-gradient(90deg, #6366f1, #8b5cf6); }
-  .rev-val { font-size: 12px; color: #666; width: 80px; text-align: right; flex-shrink: 0; }
+  .rev-val { font-size: 12px; color: #444; width: 90px; text-align: right; flex-shrink: 0; }
 
-  /* Log */
+  /* ── Log rows ── */
   .log-row { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #1a1a28; }
   .log-row:last-child { border-bottom: none; }
-  .log-date { font-size: 12px; color: #444; flex-shrink: 0; width: 85px; padding-top: 2px; }
-  .log-content { font-size: 13px; color: #aaa; line-height: 1.5; }
-  .log-tag { display: inline-block; background: #1e1e2e; color: #555; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin-right: 4px; margin-top: 4px; }
+  .log-date { font-size: 12px; color: #333; width: 90px; flex-shrink: 0; padding-top: 2px; }
+  .log-body { font-size: 13px; color: #888; line-height: 1.5; }
+  .tag { display: inline-block; background: #1a1a28; color: #444; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin: 4px 4px 0 0; }
 
-  /* Decisions */
-  .decision-row { padding: 9px 0; border-bottom: 1px solid #1a1a28; }
-  .decision-row:last-child { border-bottom: none; }
-  .decision-text { font-size: 13px; color: #aaa; line-height: 1.4; }
-  .decision-date { font-size: 11px; color: #333; margin-top: 2px; }
+  /* ── Decision rows ── */
+  .dec-row { padding: 9px 0; border-bottom: 1px solid #1a1a28; }
+  .dec-row:last-child { border-bottom: none; }
+  .dec-text { font-size: 13px; color: #888; line-height: 1.4; }
+  .dec-date { font-size: 11px; color: #2a2a3a; margin-top: 3px; }
 
-  /* Cron */
-  .cron-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #1a1a28; }
+  /* ── Cron rows ── */
+  .cron-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid #1a1a28; }
   .cron-row:last-child { border-bottom: none; }
-  .cron-name { font-size: 13px; color: #e2e2e8; font-weight: 500; }
-  .cron-schedule { font-size: 12px; color: #555; margin-top: 2px; }
+  .cron-name { font-size: 13px; font-weight: 500; color: #e2e2e8; }
+  .cron-sched { font-size: 12px; color: #444; margin-top: 2px; }
 
-  @media (max-width: 800px) {
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
-    .grid-wide { grid-template-columns: 1fr; }
+  /* ── Usage session rows ── */
+  .sess-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #1a1a28; }
+  .sess-row:last-child { border-bottom: none; }
+  .sess-date { font-size: 12px; color: #444; width: 90px; flex-shrink: 0; }
+  .sess-label { font-size: 13px; color: #888; flex: 1; }
+  .sess-cost { font-size: 13px; font-weight: 600; color: #a78bfa; }
+
+  @media (max-width: 900px) {
+    .stat-tiles { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .sidebar { width: 60px; }
+    .sidebar .nav-item span, .sidebar-logo p, .sidebar-logo h2, .sidebar-section-label, .sidebar-bottom { display: none; }
+    .main { margin-left: 60px; }
   }
 </style>
 </head>
 <body>
 
-<h1>📋 Joe & Floyd — Command Center</h1>
-<p class="subtitle">Updated: 2026-03-24 · AI Automation Agency → Micro-SaaS · Target: $1,000,000 ARR</p>
-
-<!-- Top stats -->
-<div class="stats-row">
-  <div class="stat-card">
-    <div class="stat-sub">Revenue (MTD)</div>
-    <div class="stat-big">$0</div>
-    <div class="stat-sub2">Target: $500 by Apr</div>
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>🦞 Command Center</h2>
+    <p>Joe & Floyd · AI Agency</p>
   </div>
-  <div class="stat-card">
-    <div class="stat-sub">Active Clients</div>
-    <div class="stat-big">0</div>
-    <div class="stat-sub2">Target: 1 by Apr 30</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-sub">Days Active</div>
-    <div class="stat-big">1</div>
-    <div class="stat-sub2">Since 2026-03-24</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-sub">AI Spend (Total)</div>
-    <div class="stat-big">$0.43</div>
-    <div class="stat-sub2">~130k tokens today</div>
-  </div>
-</div>
 
-<div class="grid-wide">
+  <div class="sidebar-section-label">Overview</div>
+  <div class="nav-item active" onclick="show('overview')">
+    <span class="icon">📊</span><span>Overview</span>
+  </div>
 
-  <!-- PROJECT TRACKER -->
-  <div class="card">
-    <div class="card-title">Project Tracker</div>
+  <div class="sidebar-section-label">Business</div>
+  <div class="nav-item" onclick="show('projects')">
+    <span class="icon">📁</span><span>Projects</span>
+  </div>
+  <div class="nav-item" onclick="show('revenue')">
+    <span class="icon">💰</span><span>Revenue</span>
+  </div>
+  <div class="nav-item" onclick="show('decisions')">
+    <span class="icon">🎯</span><span>Decisions</span>
+  </div>
 
-    <!-- AI Agency -->
-    <div class="project-block">
-      <div class="project-header">
-        <div>
-          <div class="project-name">AI Automation Agency</div>
-          <div class="project-desc">Marketing agencies & SMBs · Lead: $500 Audit</div>
+  <div class="sidebar-section-label">System</div>
+  <div class="nav-item" onclick="show('tokens')">
+    <span class="icon">🧮</span><span>Token Usage</span>
+  </div>
+  <div class="nav-item" onclick="show('automation')">
+    <span class="icon">⚙️</span><span>Automation</span>
+  </div>
+  <div class="nav-item" onclick="show('infrastructure')">
+    <span class="icon">🔧</span><span>Infrastructure</span>
+  </div>
+
+  <div class="sidebar-section-label">Memory</div>
+  <div class="nav-item" onclick="show('log')">
+    <span class="icon">📝</span><span>Daily Log</span>
+  </div>
+
+  <div class="sidebar-bottom">Updated 2026-03-24</div>
+</nav>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="main">
+
+  <!-- ── OVERVIEW ── -->
+  <div id="overview" class="section active">
+    <div class="page-title">Overview</div>
+    <div class="page-sub">AI Automation Agency → Micro-SaaS · Target: $1,000,000 ARR</div>
+
+    <div class="stat-tiles">
+      <div class="tile"><div class="tile-val">$0</div><div class="tile-label">Revenue (MTD)</div><div class="tile-sub">Target: $500 by Apr</div></div>
+      <div class="tile"><div class="tile-val">0</div><div class="tile-label">Active Clients</div><div class="tile-sub">Target: 1 by Apr 30</div></div>
+      <div class="tile"><div class="tile-val">1</div><div class="tile-label">Days Active</div><div class="tile-sub">Since 2026-03-24</div></div>
+      <div class="tile"><div class="tile-val">$0.43</div><div class="tile-label">AI Spend (Total)</div><div class="tile-sub">~130k tokens today</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Project Status</div>
+        <div class="metric"><span class="metric-label">AI Automation Agency</span><span class="badge badge-yellow">🟡 Planning</span></div>
+        <div class="metric"><span class="metric-label">Micro-SaaS (Phase 2)</span><span class="badge badge-gray">⏳ Pending</span></div>
+        <div class="metric"><span class="metric-label">OpenClaw Infrastructure</span><span class="badge badge-green">✅ Active</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Automated Systems</div>
+        <div class="metric"><span class="metric-label">🌙 Overnight Employee</span><span class="badge badge-green">✅ Live</span></div>
+        <div class="metric"><span class="metric-label">📈 Trending Alerts</span><span class="badge badge-green">✅ Live</span></div>
+        <div class="metric"><span class="metric-label">🔒 Security Audit</span><span class="badge badge-green">✅ Live</span></div>
+        <div class="metric"><span class="metric-label">🤖 R&D Department</span><span class="badge badge-gray">⏳ Not built</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Open Items</div>
+        <div class="metric"><span class="metric-label">Register domain</span><span class="badge badge-red">🔴 High</span></div>
+        <div class="metric"><span class="metric-label">LinkedIn profile</span><span class="badge badge-red">🔴 High</span></div>
+        <div class="metric"><span class="metric-label">Cal.com + Stripe</span><span class="badge badge-red">🔴 High</span></div>
+        <div class="metric"><span class="metric-label">Start outreach</span><span class="badge badge-red">🔴 High</span></div>
+        <div class="metric"><span class="metric-label">Reddit API creds</span><span class="badge badge-yellow">🟡 Medium</span></div>
+        <div class="metric"><span class="metric-label">VPS firewall</span><span class="badge badge-yellow">🟡 Medium</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Key Metrics</div>
+        <div class="metric"><span class="metric-label">Outreach sent</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">Discovery calls</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">Proposals sent</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">MRR</span><span class="metric-value">$0</span></div>
+        <div class="metric"><span class="metric-label">Total revenue</span><span class="metric-value">$0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROJECTS ── -->
+  <div id="projects" class="section">
+    <div class="page-title">Projects</div>
+    <div class="page-sub">Active and upcoming business projects</div>
+
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-title">Phase 1 — AI Automation Agency</div>
+        <div class="project-block">
+          <div class="project-header">
+            <div>
+              <div class="project-name">AI Automation Agency</div>
+              <div class="project-desc">Done-for-you AI workflow automation · Marketing agencies & SMBs (5–50 employees)</div>
+            </div>
+            <span class="badge badge-yellow">🟡 Planning</span>
+          </div>
+          <div class="metric"><span class="metric-label">Lead offer</span><span class="metric-value">$500 Audit</span></div>
+          <div class="metric"><span class="metric-label">Retainer target</span><span class="metric-value">$1,500–$3,000/mo</span></div>
+          <div class="metric"><span class="metric-label">$1M path</span><span class="metric-value">20 clients × $4,200/mo</span></div>
+          <div class="metric"><span class="metric-label">Target date</span><span class="metric-value">First client by Apr 30</span></div>
+          <div class="divider"></div>
+          <div class="prog-wrap">
+            <div class="prog-header"><span>Task progress</span><span>0 / 7</span></div>
+            <div class="prog-bg"><div class="prog-bar" style="width:0%"></div></div>
+          </div>
+          <div class="milestone-row">
+            <span class="ms todo">Setup complete</span>
+            <span class="ms todo">First outreach</span>
+            <span class="ms todo">Discovery call</span>
+            <span class="ms todo">First paid client</span>
+          </div>
+          <div class="task-list">
+            <div class="task"><div class="chk"></div><div class="task-text">Register domain</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Optimize LinkedIn profile for agency positioning</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Set up Cal.com (discovery call booking)</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Set up Stripe (payments)</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Write 3 cold email templates</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Start 20 LinkedIn outreach connections/day</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Close first $500 Automation Audit</div></div>
+          </div>
         </div>
-        <span class="badge badge-yellow">🟡 Planning</span>
       </div>
-      <div class="progress-wrap">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:#555">
-          <span>Progress</span><span>0 / 7 tasks</span>
+
+      <div class="card">
+        <div class="card-title">Phase 2 — Micro-SaaS</div>
+        <div class="project-block">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Micro-SaaS Product</div>
+              <div class="project-desc">Build from validated agency pain points · Starts month 4</div>
+            </div>
+            <span class="badge badge-gray">⏳ Pending</span>
+          </div>
+          <div class="metric"><span class="metric-label">Trigger</span><span class="metric-value">3+ agency clients</span></div>
+          <div class="metric"><span class="metric-label">Funding</span><span class="metric-value">Agency revenue</span></div>
+          <div class="metric"><span class="metric-label">Target launch</span><span class="metric-value">Jul 2026</span></div>
+          <div class="metric"><span class="metric-label">$1M path</span><span class="metric-value">500 customers × $167/mo</span></div>
+          <div class="divider"></div>
+          <div class="milestone-row">
+            <span class="ms todo">3 agency clients</span>
+            <span class="ms todo">Pain point ID'd</span>
+            <span class="ms todo">MVP built</span>
+            <span class="ms todo">First SaaS customer</span>
+          </div>
+          <div class="task-list">
+            <div class="task"><div class="chk"></div><div class="task-text">Identify recurring pain point from agency clients</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Validate with 3+ clients</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Build MVP with AI coding tools</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Launch and onboard first paying SaaS customer</div></div>
+          </div>
         </div>
-        <div class="progress-bg"><div class="progress-bar" style="width:0%"></div></div>
       </div>
-      <div class="milestone-row">
-        <span class="milestone pending">Setup</span>
-        <span class="milestone pending">First outreach</span>
-        <span class="milestone pending">Discovery call</span>
-        <span class="milestone pending">First client</span>
-      </div>
-      <div class="task-list">
-        <div class="task-item"><div class="task-check"></div><div class="task-text">Register domain</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">Optimize LinkedIn profile</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">Set up Cal.com + Stripe</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">Write 3 cold email templates</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">Start 20 outreach connections/day</div></div>
-      </div>
-    </div>
 
-    <!-- Micro-SaaS -->
-    <div class="project-block">
-      <div class="project-header">
-        <div>
-          <div class="project-name">Micro-SaaS</div>
-          <div class="project-desc">Phase 2 · Starts month 4</div>
+      <div class="card">
+        <div class="card-title">Infrastructure — OpenClaw Setup</div>
+        <div class="project-block">
+          <div class="project-header">
+            <div>
+              <div class="project-name">OpenClaw Infrastructure</div>
+              <div class="project-desc">Agent system, memory, automation, monitoring</div>
+            </div>
+            <span class="badge badge-green">✅ Active</span>
+          </div>
+          <div class="divider"></div>
+          <div class="prog-wrap">
+            <div class="prog-header"><span>Task progress</span><span>6 / 9</span></div>
+            <div class="prog-bg"><div class="prog-bar" style="width:67%"></div></div>
+          </div>
+          <div class="milestone-row">
+            <span class="ms done">Telegram live</span>
+            <span class="ms done">Security hardened</span>
+            <span class="ms done">Memory system</span>
+            <span class="ms done">Overnight employee</span>
+            <span class="ms done">Trending alerts</span>
+            <span class="ms todo">Agent army</span>
+          </div>
+          <div class="task-list">
+            <div class="task"><div class="chk done"></div><div class="task-text done">Telegram connected & paired</div></div>
+            <div class="task"><div class="chk done"></div><div class="task-text done">Security hardened (chmod, redaction, updates)</div></div>
+            <div class="task"><div class="chk done"></div><div class="task-text done">Daily memory system + GitHub Pages dashboard</div></div>
+            <div class="task"><div class="chk done"></div><div class="task-text done">Overnight employee (nightly 2am cron)</div></div>
+            <div class="task"><div class="chk done"></div><div class="task-text done">Trending alerts (YouTube + Reddit, daily 7am)</div></div>
+            <div class="task"><div class="chk done"></div><div class="task-text done">Weekly security audit + update check crons</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">Reddit API credentials</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">VPS firewall verified (Hostinger panel)</div></div>
+            <div class="task"><div class="chk"></div><div class="task-text">VPS backups / snapshots enabled</div></div>
+          </div>
         </div>
-        <span class="badge badge-gray">⏳ Pending</span>
       </div>
-      <div class="milestone-row">
-        <span class="milestone pending">3 agency clients</span>
-        <span class="milestone pending">Pain point ID'd</span>
-        <span class="milestone pending">MVP launched</span>
-      </div>
+
+    </div>
+  </div>
+
+  <!-- ── REVENUE ── -->
+  <div id="revenue" class="section">
+    <div class="page-title">Revenue</div>
+    <div class="page-sub">Tracking progress toward $1,000,000 ARR</div>
+
+    <div class="stat-tiles">
+      <div class="tile"><div class="tile-val">$0</div><div class="tile-label">Total Revenue</div><div class="tile-sub">All time</div></div>
+      <div class="tile"><div class="tile-val">$0</div><div class="tile-label">MRR</div><div class="tile-sub">Monthly recurring</div></div>
+      <div class="tile"><div class="tile-val">0</div><div class="tile-label">Active Clients</div><div class="tile-sub">Retainer + project</div></div>
+      <div class="tile"><div class="tile-val">0%</div><div class="tile-label">To $1M Target</div><div class="tile-sub">$1,000,000 annual goal</div></div>
     </div>
 
-    <!-- Infrastructure -->
-    <div class="project-block">
-      <div class="project-header">
-        <div>
-          <div class="project-name">OpenClaw Infrastructure</div>
-          <div class="project-desc">Agent system, memory, automation</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Monthly Targets</div>
+        <div class="rev-row"><div class="rev-label">Mar 2026</div><div class="rev-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $0</div></div>
+        <div class="rev-row"><div class="rev-label">Apr 2026</div><div class="rev-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $500</div></div>
+        <div class="rev-row"><div class="rev-label">May 2026</div><div class="rev-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $2,500</div></div>
+        <div class="rev-row"><div class="rev-label">Jun 2026</div><div class="rev-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $5,000</div></div>
+        <div class="rev-row"><div class="rev-label">Jul 2026</div><div class="rev-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $10,000</div></div>
+        <div class="rev-row"><div class="rev-label">Aug 2026</div><div class="rev-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $15,000</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Annual Breakdown</div>
+        <div class="metric"><span class="metric-label">Annual target</span><span class="metric-value">$1,000,000</span></div>
+        <div class="metric"><span class="metric-label">Monthly equivalent</span><span class="metric-value">$83,333</span></div>
+        <div class="metric"><span class="metric-label">Weekly equivalent</span><span class="metric-value">$19,230</span></div>
+        <div class="metric"><span class="metric-label">Daily equivalent</span><span class="metric-value">$2,740</span></div>
+        <div class="divider"></div>
+        <div class="metric"><span class="metric-label">Agency $1M path</span><span class="metric-value">20 clients × $4,200/mo</span></div>
+        <div class="metric"><span class="metric-label">SaaS $1M path</span><span class="metric-value">500 customers × $167/mo</span></div>
+        <div class="divider"></div>
+        <div class="card-title" style="margin-top:4px">Pipeline</div>
+        <div class="metric"><span class="metric-label">Outreach sent</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">Discovery calls booked</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">Proposals sent</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">Audits closed</span><span class="metric-value">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOKEN USAGE ── -->
+  <div id="tokens" class="section">
+    <div class="page-title">Token Consumption</div>
+    <div class="page-sub">AI usage and cost tracking across all sessions</div>
+
+    <div class="stat-tiles">
+      <div class="tile"><div class="tile-val">$0.43</div><div class="tile-label">Total Spend</div><div class="tile-sub">All time</div></div>
+      <div class="tile"><div class="tile-val">131k</div><div class="tile-label">Total Tokens</div><div class="tile-sub">Input + output</div></div>
+      <div class="tile"><div class="tile-val">100%</div><div class="tile-label">Cache Hit Rate</div><div class="tile-sub">Today's session</div></div>
+      <div class="tile"><div class="tile-val">1</div><div class="tile-label">Sessions</div><div class="tile-sub">Total sessions</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Today's Session — 2026-03-24</div>
+        <div class="metric"><span class="metric-label">Model</span><span class="metric-value" style="font-size:12px">Claude Sonnet 4.6</span></div>
+        <div class="metric"><span class="metric-label">Estimated cost</span><span class="metric-value" style="color:#a78bfa">$0.43</span></div>
+        <div class="metric"><span class="metric-label">Cache hit rate</span><span class="metric-value" style="color:#4ade80">100%</span></div>
+        <div class="metric"><span class="metric-label">Context used</span><span class="metric-value">145k / 200k (73%)</span></div>
+        <div class="divider"></div>
+        <div class="tok-row">
+          <div class="tok-label">Input tokens</div>
+          <div class="tok-bg"><div class="tok-bar" style="width:100%;background:#6366f1"></div></div>
+          <div class="tok-val">130,356</div>
         </div>
-        <span class="badge badge-green">✅ Active</span>
-      </div>
-      <div class="progress-wrap">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:#555">
-          <span>Progress</span><span>6 / 9 tasks</span>
+        <div class="tok-row">
+          <div class="tok-label">Output tokens</div>
+          <div class="tok-bg"><div class="tok-bar" style="width:1%;background:#8b5cf6"></div></div>
+          <div class="tok-val">940</div>
         </div>
-        <div class="progress-bg"><div class="progress-bar" style="width:67%"></div></div>
+        <div class="tok-row">
+          <div class="tok-label">Cache reads</div>
+          <div class="tok-bg"><div class="tok-bar" style="width:99%;background:#0d4a2e"></div></div>
+          <div class="tok-val" style="color:#4ade80">130k saved</div>
+        </div>
       </div>
-      <div class="milestone-row">
-        <span class="milestone done">Telegram live</span>
-        <span class="milestone done">Overnight employee</span>
-        <span class="milestone done">Trending alerts</span>
-        <span class="milestone pending">Agent army</span>
-      </div>
-      <div class="task-list">
-        <div class="task-item"><div class="task-check done"></div><div class="task-text done">Telegram connected</div></div>
-        <div class="task-item"><div class="task-check done"></div><div class="task-text done">Security hardened</div></div>
-        <div class="task-item"><div class="task-check done"></div><div class="task-text done">Daily memory + dashboard</div></div>
-        <div class="task-item"><div class="task-check done"></div><div class="task-text done">Overnight employee (2am cron)</div></div>
-        <div class="task-item"><div class="task-check done"></div><div class="task-text done">Trending alerts (YouTube + Reddit)</div></div>
-        <div class="task-item"><div class="task-check done"></div><div class="task-text done">GitHub Pages dashboard live</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">Reddit API credentials</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">VPS firewall verified</div></div>
-        <div class="task-item"><div class="task-check"></div><div class="task-text">VPS backups enabled</div></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- TOKEN CONSUMPTION -->
-  <div class="card">
-    <div class="card-title">Token Consumption</div>
-
-    <div class="metric">
-      <span class="metric-label">Model</span>
-      <span class="metric-value" style="font-size:12px">Claude Sonnet 4.6</span>
-    </div>
-    <div class="metric">
-      <span class="metric-label">Total spend (all time)</span>
-      <span class="metric-value" style="color:#a78bfa">$0.43</span>
-    </div>
-    <div class="metric">
-      <span class="metric-label">Spend today</span>
-      <span class="metric-value" style="color:#a78bfa">$0.43</span>
-    </div>
-    <div class="metric">
-      <span class="metric-label">Cache hit rate</span>
-      <span class="metric-value" style="color:#4ade80">100%</span>
-    </div>
-
-    <div class="divider"></div>
-    <div style="font-size:11px;color:#444;margin-bottom:10px">Today's session breakdown</div>
-
-    <div class="token-bar-row">
-      <div class="token-label">Input</div>
-      <div class="token-bar-bg"><div class="token-bar" style="width:100%;background:#6366f1"></div></div>
-      <div class="token-val">130k tokens</div>
-    </div>
-    <div class="token-bar-row">
-      <div class="token-label">Output</div>
-      <div class="token-bar-bg"><div class="token-bar" style="width:1%;background:#8b5cf6"></div></div>
-      <div class="token-val">940 tokens</div>
-    </div>
-    <div class="token-bar-row">
-      <div class="token-label">Cache reads</div>
-      <div class="token-bar-bg"><div class="token-bar" style="width:99%;background:#0d2e1a"></div></div>
-      <div class="token-val" style="color:#4ade80">130k saved</div>
-    </div>
-
-    <div class="divider"></div>
-    <div style="font-size:11px;color:#444;margin-bottom:10px">Session history</div>
-
-    <div class="usage-row">
-      <div class="usage-date">2026-03-24</div>
-      <div class="usage-label">Day 1 — Full onboarding</div>
-      <div class="usage-cost">$0.43</div>
-    </div>
-
-    <div class="divider"></div>
-    <div style="font-size:11px;color:#444;margin-bottom:10px">Pricing reference (Sonnet 4.6)</div>
-    <div class="metric"><span class="metric-label">Input</span><span class="metric-value" style="font-size:12px">$3.00 / M tokens</span></div>
-    <div class="metric"><span class="metric-label">Output</span><span class="metric-value" style="font-size:12px">$15.00 / M tokens</span></div>
-    <div class="metric"><span class="metric-label">Cache reads</span><span class="metric-value" style="font-size:12px">$0.30 / M tokens</span></div>
-  </div>
-
-</div>
-
-<div class="grid">
-
-  <!-- Revenue Targets -->
-  <div class="card">
-    <div class="card-title">Revenue Targets</div>
-    <div style="margin-bottom:14px">
-      <div class="rev-row"><div class="rev-label">Mar 2026</div><div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $0</div></div>
-      <div class="rev-row"><div class="rev-label">Apr 2026</div><div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $500</div></div>
-      <div class="rev-row"><div class="rev-label">May 2026</div><div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $2,500</div></div>
-      <div class="rev-row"><div class="rev-label">Jun 2026</div><div class="rev-bar-bg"><div class="rev-bar" style="width:0%"></div></div><div class="rev-val">$0 / $5,000</div></div>
-    </div>
-    <div class="divider"></div>
-    <div class="metric"><span class="metric-label">Annual target</span><span class="metric-value">$1,000,000</span></div>
-    <div class="metric"><span class="metric-label">Monthly target</span><span class="metric-value">$83,333</span></div>
-    <div class="metric"><span class="metric-label">Daily target</span><span class="metric-value">$2,740</span></div>
-  </div>
-
-  <!-- Automated Systems -->
-  <div class="card">
-    <div class="card-title">Automated Systems</div>
-    <div class="cron-row">
-      <div>
-        <div class="cron-name">🌙 Overnight Employee</div>
-        <div class="cron-schedule">Daily 2:00am · Reviews business state, executes 1 task</div>
-      </div>
-      <span class="badge badge-green">✅ Live</span>
-    </div>
-    <div class="cron-row">
-      <div>
-        <div class="cron-name">📈 Trending Alerts</div>
-        <div class="cron-schedule">Daily 7:00am · YouTube + Reddit + X RSS</div>
-      </div>
-      <span class="badge badge-green">✅ Live</span>
-    </div>
-    <div class="cron-row">
-      <div>
-        <div class="cron-name">🔒 Security Audit</div>
-        <div class="cron-schedule">Mondays 9:00am · openclaw security audit --deep</div>
-      </div>
-      <span class="badge badge-green">✅ Live</span>
-    </div>
-    <div class="cron-row">
-      <div>
-        <div class="cron-name">🔄 Update Check</div>
-        <div class="cron-schedule">Mondays 9:05am · openclaw update status</div>
-      </div>
-      <span class="badge badge-green">✅ Live</span>
-    </div>
-    <div class="cron-row">
-      <div>
-        <div class="cron-name">🤖 R&D Department</div>
-        <div class="cron-schedule">5-agent debate team · weekly strategy memo</div>
-      </div>
-      <span class="badge badge-gray">⏳ Not built</span>
-    </div>
-  </div>
-
-  <!-- Daily Log -->
-  <div class="card">
-    <div class="card-title">Daily Log</div>
-    <div class="log-row">
-      <div class="log-date">2026-03-24</div>
-      <div class="log-content">
-        First day. Onboarding, Telegram, security hardened, business plan, memory + dashboard, overnight employee, trending alerts live.
-        <div><span class="log-tag">onboarding</span><span class="log-tag">security</span><span class="log-tag">business-plan</span><span class="log-tag">automation</span></div>
+      <div class="card">
+        <div class="card-title">Pricing Reference — Sonnet 4.6</div>
+        <div class="metric"><span class="metric-label">Input tokens</span><span class="metric-value">$3.00 / M tokens</span></div>
+        <div class="metric"><span class="metric-label">Output tokens</span><span class="metric-value">$15.00 / M tokens</span></div>
+        <div class="metric"><span class="metric-label">Cache reads</span><span class="metric-value">$0.30 / M tokens</span></div>
+        <div class="metric"><span class="metric-label">Cache writes</span><span class="metric-value">$3.75 / M tokens</span></div>
+        <div class="divider"></div>
+        <div class="card-title" style="margin-top:4px">Session History</div>
+        <div class="sess-row">
+          <div class="sess-date">2026-03-24</div>
+          <div class="sess-label">Day 1 — Full onboarding session</div>
+          <div class="sess-cost">$0.43</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Infrastructure -->
-  <div class="card">
-    <div class="card-title">Infrastructure Status</div>
-    <div class="metric"><span class="metric-label">OpenClaw</span><span class="badge badge-green">✅ 2026.3.23-2</span></div>
-    <div class="metric"><span class="metric-label">Telegram</span><span class="badge badge-green">✅ Connected</span></div>
-    <div class="metric"><span class="metric-label">GitHub Pages</span><span class="badge badge-green">✅ Live</span></div>
-    <div class="metric"><span class="metric-label">API key perms</span><span class="badge badge-green">✅ 600</span></div>
-    <div class="metric"><span class="metric-label">Log redaction</span><span class="badge badge-green">✅ Active</span></div>
-    <div class="metric"><span class="metric-label">YouTube API</span><span class="badge badge-green">✅ Active</span></div>
-    <div class="metric"><span class="metric-label">Reddit API</span><span class="badge badge-yellow">⚠️ Pending creds</span></div>
-    <div class="metric"><span class="metric-label">X API</span><span class="badge badge-blue">ℹ️ RSS only (free)</span></div>
-    <div class="metric"><span class="metric-label">VPS firewall</span><span class="badge badge-yellow">⚠️ Unverified</span></div>
-    <div class="metric"><span class="metric-label">VPS backups</span><span class="badge badge-yellow">⚠️ Not configured</span></div>
+  <!-- ── AUTOMATION ── -->
+  <div id="automation" class="section">
+    <div class="page-title">Automation</div>
+    <div class="page-sub">Scheduled cron jobs and autonomous systems</div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">Active Cron Jobs</div>
+      <div class="cron-row">
+        <div><div class="cron-name">🌙 Overnight Employee</div><div class="cron-sched">Daily · 2:00am Europe/Berlin · Reviews business, executes 1 high-leverage task, reports to Telegram</div></div>
+        <span class="badge badge-green">✅ Live</span>
+      </div>
+      <div class="cron-row">
+        <div><div class="cron-name">📈 Trending Alerts</div><div class="cron-sched">Daily · 7:00am Europe/Berlin · YouTube + Reddit + X RSS scan → top picks sent to Telegram</div></div>
+        <span class="badge badge-green">✅ Live</span>
+      </div>
+      <div class="cron-row">
+        <div><div class="cron-name">🔒 Security Audit</div><div class="cron-sched">Weekly · Mondays 9:00am · openclaw security audit --deep → Telegram alert if issues found</div></div>
+        <span class="badge badge-green">✅ Live</span>
+      </div>
+      <div class="cron-row">
+        <div><div class="cron-name">🔄 Update Check</div><div class="cron-sched">Weekly · Mondays 9:05am · openclaw update status → Telegram alert if update available</div></div>
+        <span class="badge badge-green">✅ Live</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Planned Systems</div>
+      <div class="cron-row">
+        <div><div class="cron-name">🤖 R&D Department</div><div class="cron-sched">5 AI models · debate ideas → weekly strategy memo delivered to Telegram</div></div>
+        <span class="badge badge-gray">⏳ Not built</span>
+      </div>
+      <div class="cron-row">
+        <div><div class="cron-name">👥 Agent Army</div><div class="cron-sched">Scout · Hunter · Analyst · Builder — specialist subagents per task type</div></div>
+        <span class="badge badge-gray">⏳ Not built</span>
+      </div>
+      <div class="cron-row">
+        <div><div class="cron-name">📤 Outreach Automation</div><div class="cron-sched">Daily LinkedIn connection drafts + follow-up tracker</div></div>
+        <span class="badge badge-gray">⏳ Not built</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Key Decisions -->
-  <div class="card">
-    <div class="card-title">Key Decisions</div>
-    <div class="decision-row"><div class="decision-text">AI Agency as Phase 1 — fastest cash, Floyd's background = the product</div><div class="decision-date">2026-03-24</div></div>
-    <div class="decision-row"><div class="decision-text">Micro-SaaS as Phase 2 — most scalable, funded by agency revenue</div><div class="decision-date">2026-03-24</div></div>
-    <div class="decision-row"><div class="decision-text">Niche: marketing agencies + digital SMBs (5–50 employees)</div><div class="decision-date">2026-03-24</div></div>
-    <div class="decision-row"><div class="decision-text">Lead offer: $500 Automation Audit → upsell to retainer</div><div class="decision-date">2026-03-24</div></div>
-    <div class="decision-row"><div class="decision-text">X API skipped (paid tier required) — using RSS monitoring instead</div><div class="decision-date">2026-03-24</div></div>
+  <!-- ── INFRASTRUCTURE ── -->
+  <div id="infrastructure" class="section">
+    <div class="page-title">Infrastructure</div>
+    <div class="page-sub">System health, security, and integrations</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">OpenClaw Status</div>
+        <div class="metric"><span class="metric-label">Version</span><span class="badge badge-green">✅ 2026.3.23-2</span></div>
+        <div class="metric"><span class="metric-label">Host</span><span class="metric-value" style="font-size:12px">Hostinger VPS · Docker · Debian 13</span></div>
+        <div class="metric"><span class="metric-label">Gateway</span><span class="badge badge-green">✅ Running</span></div>
+        <div class="metric"><span class="metric-label">Telegram</span><span class="badge badge-green">✅ Connected</span></div>
+        <div class="metric"><span class="metric-label">GitHub Pages</span><span class="badge badge-green">✅ Live</span></div>
+        <div class="metric"><span class="metric-label">Weekly security audit</span><span class="badge badge-green">✅ Scheduled</span></div>
+        <div class="metric"><span class="metric-label">Weekly update check</span><span class="badge badge-green">✅ Scheduled</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Security Posture</div>
+        <div class="metric"><span class="metric-label">API key permissions</span><span class="badge badge-green">✅ chmod 600</span></div>
+        <div class="metric"><span class="metric-label">Log file permissions</span><span class="badge badge-green">✅ chmod 600</span></div>
+        <div class="metric"><span class="metric-label">Log redaction</span><span class="badge badge-green">✅ Active</span></div>
+        <div class="metric"><span class="metric-label">VPS firewall</span><span class="badge badge-yellow">⚠️ Unverified</span></div>
+        <div class="metric"><span class="metric-label">VPS backups</span><span class="badge badge-yellow">⚠️ Not configured</span></div>
+        <div class="metric"><span class="metric-label">Last audit</span><span class="metric-value" style="font-size:12px">2026-03-24 · 0 critical</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">API Integrations</div>
+        <div class="metric"><span class="metric-label">Anthropic (Claude)</span><span class="badge badge-green">✅ Active</span></div>
+        <div class="metric"><span class="metric-label">YouTube Data API v3</span><span class="badge badge-green">✅ Active</span></div>
+        <div class="metric"><span class="metric-label">Reddit API</span><span class="badge badge-yellow">⚠️ Pending creds</span></div>
+        <div class="metric"><span class="metric-label">X / Twitter API</span><span class="badge badge-blue">ℹ️ RSS only (free)</span></div>
+        <div class="metric"><span class="metric-label">Telegram Bot</span><span class="badge badge-green">✅ Active</span></div>
+        <div class="metric"><span class="metric-label">GitHub API</span><span class="badge badge-green">✅ Active</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Secrets Stored</div>
+        <div class="metric"><span class="metric-label">GitHub token</span><span class="badge badge-green">✅ .secrets/</span></div>
+        <div class="metric"><span class="metric-label">YouTube API key</span><span class="badge badge-green">✅ .secrets/</span></div>
+        <div class="metric"><span class="metric-label">X Bearer token</span><span class="badge badge-green">✅ .secrets/</span></div>
+        <div class="metric"><span class="metric-label">Telegram bot token</span><span class="badge badge-green">✅ openclaw.json</span></div>
+        <div class="metric"><span class="metric-label">Reddit client ID</span><span class="badge badge-yellow">⚠️ Pending</span></div>
+        <div class="metric"><span class="metric-label">Reddit secret</span><span class="badge badge-yellow">⚠️ Pending</span></div>
+      </div>
+    </div>
   </div>
 
-</div>
+  <!-- ── DECISIONS ── -->
+  <div id="decisions" class="section">
+    <div class="page-title">Key Decisions</div>
+    <div class="page-sub">Strategic decisions and rationale</div>
 
-<p style="font-size:11px;color:#333;text-align:center;margin-top:8px">Last updated: 2026-03-24 21:17 Berlin · <a href="https://github.com/pabyngono-claw/Daily-Dashboard" style="color:#444">GitHub</a></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Business Strategy</div>
+        <div class="dec-row"><div class="dec-text">AI Agency selected as Phase 1 — fastest cash, Floyd's PM + AI background is the product</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Micro-SaaS as Phase 2 — most scalable model, funded by agency revenue, built from validated pain points</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Faceless content arbitrage eliminated — too slow to monetize, $1M path too uncertain</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Budget: &lt;$500 startup — domain + tools only, no paid ads, no physical costs</div><div class="dec-date">2026-03-24</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Go-to-Market</div>
+        <div class="dec-row"><div class="dec-text">Niche: marketing agencies + digital SMBs (5–50 employees) — have budget, open to AI, predictable pain</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Lead offer: $500 Automation Audit — low barrier, easy yes, clear upsell path to retainer</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Primary outreach channel: LinkedIn — connection requests → discovery call → audit</div><div class="dec-date">2026-03-24</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Technical & Tools</div>
+        <div class="dec-row"><div class="dec-text">X API skipped (paid tier $100/mo required) — using RSS feed monitoring instead</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Reddit public JSON endpoint used as fallback while API credentials are pending</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">Dashboard hosted on GitHub Pages (free) — pushed automatically after each session</div><div class="dec-date">2026-03-24</div></div>
+        <div class="dec-row"><div class="dec-text">OpenClaw Control UI not used for external dashboard due to Docker port restrictions</div><div class="dec-date">2026-03-24</div></div>
+      </div>
+    </div>
+  </div>
 
+  <!-- ── DAILY LOG ── -->
+  <div id="log" class="section">
+    <div class="page-title">Daily Log</div>
+    <div class="page-sub">Session-by-session history and memory</div>
+
+    <div class="card">
+      <div class="card-title">2026-03-24 — Day 1</div>
+      <div class="log-row">
+        <div class="log-date">Morning</div>
+        <div class="log-body">
+          First session. Identity established (Joe / Floyd). Onboarding complete. OpenClaw runtime on Hostinger VPS confirmed.
+          <div><span class="tag">onboarding</span><span class="tag">identity</span></div>
+        </div>
+      </div>
+      <div class="log-row">
+        <div class="log-date">Afternoon</div>
+        <div class="log-body">
+          Telegram configured and paired. Security hardened: auth-profiles chmod 600, log redaction enabled, OpenClaw updated to 2026.3.23-2. Weekly security audit + update check crons scheduled.
+          <div><span class="tag">telegram</span><span class="tag">security</span><span class="tag">cron</span></div>
+        </div>
+      </div>
+      <div class="log-row">
+        <div class="log-date">Afternoon</div>
+        <div class="log-body">
+          Business direction set: AI Automation Agency (Phase 1) → Micro-SaaS (Phase 2). Target niche: marketing agencies. Full plan written to business/PLAN.md.
+          <div><span class="tag">business-plan</span><span class="tag">strategy</span></div>
+        </div>
+      </div>
+      <div class="log-row">
+        <div class="log-date">Evening</div>
+        <div class="log-body">
+          Daily memory system built. Visual dashboard created and published to GitHub Pages. YouTube videos analyzed: agent army system + 5 use cases.
+          <div><span class="tag">memory</span><span class="tag">dashboard</span><span class="tag">github</span></div>
+        </div>
+      </div>
+      <div class="log-row">
+        <div class="log-date">Evening</div>
+        <div class="log-body">
+          Overnight employee cron live (2am nightly). Trending alerts live (7am daily — YouTube + Reddit). YouTube API key stored. X API skipped (paid), RSS monitoring as fallback.
+          <div><span class="tag">automation</span><span class="tag">trending-alerts</span><span class="tag">overnight-employee</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
 </body>
 </html>
