@@ -128,6 +128,42 @@
   .sess-label { font-size: 13px; color: #888; flex: 1; }
   .sess-cost { font-size: 13px; font-weight: 600; color: #a78bfa; }
 
+  /* ── Agent registry ── */
+  .agent-card { background: #0f0f18; border: 1px solid #1e1e2e; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .agent-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .agent-name { font-size: 14px; font-weight: 700; color: #e2e2e8; }
+  .agent-role { font-size: 12px; color: #555; margin-top: 2px; }
+  .agent-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+  .agent-tag { font-size: 11px; background: #1a1a28; color: #555; padding: 2px 8px; border-radius: 6px; }
+  .agent-last { font-size: 11px; color: #333; margin-top: 4px; }
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+
+  /* ── Activity feed ── */
+  .feed-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #1a1a28; }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .feed-dot.green  { background: #4ade80; }
+  .feed-dot.yellow { background: #fbbf24; }
+  .feed-dot.blue   { background: #60a5fa; }
+  .feed-dot.purple { background: #a78bfa; }
+  .feed-dot.gray   { background: #444; }
+  .feed-dot.red    { background: #f87171; }
+  .feed-time { font-size: 11px; color: #333; width: 80px; flex-shrink: 0; padding-top: 1px; }
+  .feed-content { flex: 1; }
+  .feed-title { font-size: 13px; color: #ccc; line-height: 1.4; }
+  .feed-detail { font-size: 12px; color: #444; margin-top: 3px; }
+  .feed-agent { font-size: 11px; color: #333; margin-top: 3px; }
+
+  /* ── Risk & alerts ── */
+  .risk-item { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #1a1a28; }
+  .risk-item:last-child { border-bottom: none; }
+  .risk-icon { font-size: 18px; flex-shrink: 0; width: 24px; text-align: center; }
+  .risk-body { flex: 1; }
+  .risk-title { font-size: 13px; font-weight: 600; color: #e2e2e8; }
+  .risk-desc { font-size: 12px; color: #555; margin-top: 3px; line-height: 1.4; }
+  .risk-action { font-size: 11px; color: #6366f1; margin-top: 4px; }
+  .risk-severity { flex-shrink: 0; align-self: center; }
+
   @media (max-width: 900px) {
     .stat-tiles { grid-template-columns: repeat(2, 1fr); }
     .grid-2, .grid-3 { grid-template-columns: 1fr; }
@@ -160,6 +196,17 @@
   </div>
   <div class="nav-item" onclick="show('decisions')">
     <span class="icon">🎯</span><span>Decisions</span>
+  </div>
+
+  <div class="sidebar-section-label">Operations</div>
+  <div class="nav-item" onclick="show('agents')">
+    <span class="icon">🤖</span><span>Agent Registry</span>
+  </div>
+  <div class="nav-item" onclick="show('activity')">
+    <span class="icon">🔔</span><span>Activity Feed</span>
+  </div>
+  <div class="nav-item" onclick="show('risks')">
+    <span class="icon">⚠️</span><span>Risks & Alerts</span>
   </div>
 
   <div class="sidebar-section-label">System</div>
@@ -552,6 +599,384 @@
         <div class="dec-row"><div class="dec-text">Reddit public JSON endpoint used as fallback while API credentials are pending</div><div class="dec-date">2026-03-24</div></div>
         <div class="dec-row"><div class="dec-text">Dashboard hosted on GitHub Pages (free) — pushed automatically after each session</div><div class="dec-date">2026-03-24</div></div>
         <div class="dec-row"><div class="dec-text">OpenClaw Control UI not used for external dashboard due to Docker port restrictions</div><div class="dec-date">2026-03-24</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AGENT REGISTRY ── -->
+  <div id="agents" class="section">
+    <div class="page-title">Agent Registry</div>
+    <div class="page-sub">All active and planned agents — roles, models, status, last activity</div>
+
+    <div class="card-title" style="margin-bottom:12px;font-size:11px;color:#444;text-transform:uppercase;letter-spacing:.08em">Active Agents</div>
+    <div class="agent-grid" style="margin-bottom:24px">
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div><div class="agent-name">🦞 Joe</div><div class="agent-role">Main Orchestrator & Strategy</div></div>
+          <span class="badge badge-green">✅ Active</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Sonnet 4.6</span>
+          <span class="agent-tag">200k context</span>
+          <span class="agent-tag">Always on</span>
+        </div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Responsibility</span><span class="metric-value" style="font-size:12px">Strategy, planning, coordination</span></div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Last active</span><span class="metric-value" style="font-size:12px;color:#4ade80">2026-03-24 21:33</span></div>
+        <div class="metric" style="padding:6px 0;border:none"><span class="metric-label" style="font-size:12px">Sessions today</span><span class="metric-value" style="font-size:12px">1 (145k tokens)</span></div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div><div class="agent-name">🌙 Overnight Employee</div><div class="agent-role">Autonomous Nightly Worker</div></div>
+          <span class="badge badge-green">✅ Scheduled</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Sonnet 4.6</span>
+          <span class="agent-tag">Isolated session</span>
+          <span class="agent-tag">Cron: 2am daily</span>
+        </div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Responsibility</span><span class="metric-value" style="font-size:12px">Review goals, execute 1 task</span></div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Next run</span><span class="metric-value" style="font-size:12px;color:#fbbf24">2026-03-25 02:00</span></div>
+        <div class="metric" style="padding:6px 0;border:none"><span class="metric-label" style="font-size:12px">Reports to</span><span class="metric-value" style="font-size:12px">Telegram</span></div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div><div class="agent-name">📈 Trending Scout</div><div class="agent-role">Daily Market Intelligence</div></div>
+          <span class="badge badge-green">✅ Scheduled</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Sonnet 4.6</span>
+          <span class="agent-tag">Isolated session</span>
+          <span class="agent-tag">Cron: 7am daily</span>
+        </div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Sources</span><span class="metric-value" style="font-size:12px">YouTube · Reddit · X RSS</span></div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Next run</span><span class="metric-value" style="font-size:12px;color:#fbbf24">2026-03-25 07:00</span></div>
+        <div class="metric" style="padding:6px 0;border:none"><span class="metric-label" style="font-size:12px">Reports to</span><span class="metric-value" style="font-size:12px">Telegram</span></div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div><div class="agent-name">🔒 Security Auditor</div><div class="agent-role">Weekly Security & Updates</div></div>
+          <span class="badge badge-green">✅ Scheduled</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Sonnet 4.6</span>
+          <span class="agent-tag">Isolated session</span>
+          <span class="agent-tag">Cron: Mon 9am</span>
+        </div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Checks</span><span class="metric-value" style="font-size:12px">Security audit + update status</span></div>
+        <div class="metric" style="padding:6px 0"><span class="metric-label" style="font-size:12px">Next run</span><span class="metric-value" style="font-size:12px;color:#fbbf24">2026-03-30 09:00</span></div>
+        <div class="metric" style="padding:6px 0;border:none"><span class="metric-label" style="font-size:12px">Reports to</span><span class="metric-value" style="font-size:12px">Telegram (issues only)</span></div>
+      </div>
+
+    </div>
+
+    <div class="card-title" style="margin-bottom:12px;font-size:11px;color:#333;text-transform:uppercase;letter-spacing:.08em">Planned Agents — Not Yet Built</div>
+    <div class="agent-grid">
+
+      <div class="agent-card" style="opacity:.5">
+        <div class="agent-header">
+          <div><div class="agent-name">🔍 Hunter</div><div class="agent-role">LinkedIn Outreach & Prospecting</div></div>
+          <span class="badge badge-gray">⏳ Planned</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Haiku 4.5</span>
+          <span class="agent-tag">Cron: 9am daily</span>
+        </div>
+        <div class="agent-last">Drafts 20 daily LinkedIn connection requests · tracks responses · books discovery calls</div>
+      </div>
+
+      <div class="agent-card" style="opacity:.5">
+        <div class="agent-header">
+          <div><div class="agent-name">📊 Analyst</div><div class="agent-role">KPI & Revenue Monitoring</div></div>
+          <span class="badge badge-gray">⏳ Planned</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Haiku 4.5</span>
+          <span class="agent-tag">Cron: 6pm daily</span>
+        </div>
+        <div class="agent-last">Tracks revenue, pipeline metrics, updates dashboard, flags deviations from targets</div>
+      </div>
+
+      <div class="agent-card" style="opacity:.5">
+        <div class="agent-header">
+          <div><div class="agent-name">🛠️ Builder</div><div class="agent-role">Coding & Automation Builds</div></div>
+          <span class="badge badge-gray">⏳ Planned</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Claude Opus 4.6</span>
+          <span class="agent-tag">On demand</span>
+        </div>
+        <div class="agent-last">Builds n8n workflows, writes code, creates client deliverables on request</div>
+      </div>
+
+      <div class="agent-card" style="opacity:.5">
+        <div class="agent-header">
+          <div><div class="agent-name">🧪 R&D Department</div><div class="agent-role">5-Agent Strategy Debate Team</div></div>
+          <span class="badge badge-gray">⏳ Planned</span>
+        </div>
+        <div class="agent-meta">
+          <span class="agent-tag">Mixed models</span>
+          <span class="agent-tag">Weekly</span>
+        </div>
+        <div class="agent-last">5 agents debate ideas · synthesize → weekly strategy memo delivered to Telegram</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── ACTIVITY FEED ── -->
+  <div id="activity" class="section">
+    <div class="page-title">Activity Feed</div>
+    <div class="page-sub">Everything that happened — agents, sessions, system events, alerts</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Today — 2026-03-24</div>
+
+        <div class="feed-item">
+          <div class="feed-dot green"></div>
+          <div class="feed-time">21:17</div>
+          <div class="feed-content">
+            <div class="feed-title">Trending alerts system launched</div>
+            <div class="feed-detail">YouTube + Reddit + X RSS · daily 7am cron scheduled</div>
+            <div class="feed-agent">Agent: Joe · System</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot green"></div>
+          <div class="feed-time">19:26</div>
+          <div class="feed-content">
+            <div class="feed-title">Overnight employee cron activated</div>
+            <div class="feed-detail">Nightly 2am · reviews goals, executes 1 task, reports to Telegram</div>
+            <div class="feed-agent">Agent: Joe · Cron</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot purple"></div>
+          <div class="feed-time">19:16</div>
+          <div class="feed-content">
+            <div class="feed-title">YouTube video analysis completed</div>
+            <div class="feed-detail">"5 OpenClaw use cases" — 2/5 implemented today, 3 queued</div>
+            <div class="feed-agent">Agent: Joe · Research</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot green"></div>
+          <div class="feed-time">16:17</div>
+          <div class="feed-content">
+            <div class="feed-title">Dashboard live on GitHub Pages</div>
+            <div class="feed-detail">https://pabyngono-claw.github.io/Daily-Dashboard/</div>
+            <div class="feed-agent">Agent: Joe · Infrastructure</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot green"></div>
+          <div class="feed-time">16:03</div>
+          <div class="feed-content">
+            <div class="feed-title">Daily memory system built</div>
+            <div class="feed-detail">memory/YYYY-MM-DD.md · INDEX.md · MEMORY.md · HEARTBEAT.md updated</div>
+            <div class="feed-agent">Agent: Joe · Memory</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot blue"></div>
+          <div class="feed-time">15:39</div>
+          <div class="feed-content">
+            <div class="feed-title">Business plan finalised</div>
+            <div class="feed-detail">AI Agency Phase 1 · niche: marketing agencies · lead offer: $500 audit</div>
+            <div class="feed-agent">Agent: Joe · Strategy</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot green"></div>
+          <div class="feed-time">14:18</div>
+          <div class="feed-content">
+            <div class="feed-title">Security hardening complete</div>
+            <div class="feed-detail">chmod 600 · log redaction · OpenClaw updated 2026.3.23-2 · weekly audits scheduled</div>
+            <div class="feed-agent">Agent: Joe · Security</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot green"></div>
+          <div class="feed-time">14:10</div>
+          <div class="feed-content">
+            <div class="feed-title">Telegram connected & paired</div>
+            <div class="feed-detail">Bot configured · Floyd paired (ID: 7596684902)</div>
+            <div class="feed-agent">Agent: Joe · Infrastructure</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot blue"></div>
+          <div class="feed-time">11:43</div>
+          <div class="feed-content">
+            <div class="feed-title">Identity established — Day 1</div>
+            <div class="feed-detail">Agent: Joe · User: Floyd · Platform: Hostinger VPS</div>
+            <div class="feed-agent">Agent: Joe · Onboarding</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Upcoming Events</div>
+        <div class="feed-item">
+          <div class="feed-dot yellow"></div>
+          <div class="feed-time">Tomorrow 02:00</div>
+          <div class="feed-content">
+            <div class="feed-title">🌙 Overnight Employee — First Run</div>
+            <div class="feed-detail">Will review business state and execute highest-leverage task</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot yellow"></div>
+          <div class="feed-time">Tomorrow 07:00</div>
+          <div class="feed-content">
+            <div class="feed-title">📈 Trending Alerts — First Run</div>
+            <div class="feed-detail">YouTube + Reddit scan · top picks sent to Telegram</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot gray"></div>
+          <div class="feed-time">Mon 30 Mar 09:00</div>
+          <div class="feed-content">
+            <div class="feed-title">🔒 Weekly Security Audit</div>
+            <div class="feed-detail">openclaw security audit --deep · report to Telegram</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot gray"></div>
+          <div class="feed-time">Mon 30 Mar 09:05</div>
+          <div class="feed-content">
+            <div class="feed-title">🔄 Weekly Update Check</div>
+            <div class="feed-detail">openclaw update status · alert if new version available</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="card-title" style="margin-bottom:12px">Agent Stats — Today</div>
+        <div class="metric"><span class="metric-label">Agent runs today</span><span class="metric-value">1 (Joe main)</span></div>
+        <div class="metric"><span class="metric-label">Tasks completed</span><span class="metric-value">18</span></div>
+        <div class="metric"><span class="metric-label">Cron jobs fired</span><span class="metric-value">0</span></div>
+        <div class="metric"><span class="metric-label">Telegram messages sent</span><span class="metric-value">3</span></div>
+        <div class="metric"><span class="metric-label">Files created/modified</span><span class="metric-value">14</span></div>
+        <div class="metric"><span class="metric-label">GitHub pushes</span><span class="metric-value">4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RISKS & ALERTS ── -->
+  <div id="risks" class="section">
+    <div class="page-title">Risks & Alerts</div>
+    <div class="page-sub">Issues requiring attention · sorted by severity</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="color:#f87171">🔴 Critical — Action Required</div>
+
+        <div class="risk-item">
+          <div class="risk-icon">🌐</div>
+          <div class="risk-body">
+            <div class="risk-title">Domain not registered</div>
+            <div class="risk-desc">No domain = no landing page = no professional outreach. Every day without this delays your first client.</div>
+            <div class="risk-action">→ Register today. Suggested: aiops.agency, automate.agency, or yourname.ai</div>
+          </div>
+          <span class="badge badge-red risk-severity">Critical</span>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-icon">💼</div>
+          <div class="risk-body">
+            <div class="risk-title">LinkedIn profile not optimised</div>
+            <div class="risk-desc">LinkedIn is the primary outreach channel. Without a strong profile, connection requests get ignored.</div>
+            <div class="risk-action">→ Rewrite headline + about section for AI automation agency positioning</div>
+          </div>
+          <span class="badge badge-red risk-severity">Critical</span>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-icon">💳</div>
+          <div class="risk-body">
+            <div class="risk-title">No payment system set up</div>
+            <div class="risk-desc">Cal.com and Stripe not configured. Cannot accept money even if a client says yes today.</div>
+            <div class="risk-action">→ Set up Stripe + Cal.com. Takes 20 minutes.</div>
+          </div>
+          <span class="badge badge-red risk-severity">Critical</span>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-icon">📤</div>
+          <div class="risk-body">
+            <div class="risk-title">Zero outreach sent — 0 pipeline</div>
+            <div class="risk-desc">No leads = no clients = no revenue. Every week of delay pushes the first dollar further out.</div>
+            <div class="risk-action">→ Start 20 LinkedIn connections/day as soon as profile is ready</div>
+          </div>
+          <span class="badge badge-red risk-severity">Critical</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:#fbbf24">🟡 Medium — Monitor</div>
+
+        <div class="risk-item">
+          <div class="risk-icon">🔴</div>
+          <div class="risk-body">
+            <div class="risk-title">Reddit API credentials pending</div>
+            <div class="risk-desc">Currently using public JSON endpoint (rate-limited). Trending alerts will degrade if rate limit hit.</div>
+            <div class="risk-action">→ Submit Reddit credentials when approved</div>
+          </div>
+          <span class="badge badge-yellow risk-severity">Medium</span>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-icon">🔥</div>
+          <div class="risk-body">
+            <div class="risk-title">VPS firewall not verified</div>
+            <div class="risk-desc">Cannot confirm which ports are open from inside Docker. If unnecessary ports are exposed, this is a security risk.</div>
+            <div class="risk-action">→ Check Hostinger control panel → Firewall settings</div>
+          </div>
+          <span class="badge badge-yellow risk-severity">Medium</span>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-icon">💾</div>
+          <div class="risk-body">
+            <div class="risk-title">No VPS backups configured</div>
+            <div class="risk-desc">If the VPS fails, all workspace files, secrets, and config are lost with no recovery path.</div>
+            <div class="risk-action">→ Enable weekly snapshots in Hostinger panel</div>
+          </div>
+          <span class="badge badge-yellow risk-severity">Medium</span>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-icon">🐦</div>
+          <div class="risk-body">
+            <div class="risk-title">X / Twitter API on free tier only</div>
+            <div class="risk-desc">Bearer token stored but search API requires paid plan ($100/mo). Currently on RSS fallback only.</div>
+            <div class="risk-action">→ Revisit when agency revenue covers $100/mo</div>
+          </div>
+          <span class="badge badge-yellow risk-severity">Medium</span>
+        </div>
+
+        <div class="divider"></div>
+        <div class="card-title" style="color:#4ade80">✅ All Clear</div>
+        <div class="risk-item">
+          <div class="risk-icon">✅</div>
+          <div class="risk-body">
+            <div class="risk-title">Security audit — 0 critical issues</div>
+            <div class="risk-desc">Last run: 2026-03-24. API keys protected, redaction active, OpenClaw up to date.</div>
+          </div>
+          <span class="badge badge-green risk-severity">Clear</span>
+        </div>
+        <div class="risk-item">
+          <div class="risk-icon">✅</div>
+          <div class="risk-body">
+            <div class="risk-title">All cron jobs running</div>
+            <div class="risk-desc">4 scheduled jobs active. No failures detected.</div>
+          </div>
+          <span class="badge badge-green risk-severity">Clear</span>
+        </div>
       </div>
     </div>
   </div>
