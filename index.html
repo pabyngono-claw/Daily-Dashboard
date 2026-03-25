@@ -198,6 +198,10 @@
     <span class="icon">🎯</span><span>Decisions</span>
   </div>
 
+  <div class="nav-item" onclick="show('files')">
+    <span class="icon">📂</span><span>Files</span>
+  </div>
+
   <div class="sidebar-section-label">Operations</div>
   <div class="nav-item" onclick="show('agents')">
     <span class="icon">🤖</span><span>Agent Registry</span>
@@ -259,10 +263,12 @@
       </div>
       <div class="card">
         <div class="card-title">Open Items</div>
-        <div class="metric"><span class="metric-label">Register domain</span><span class="badge badge-red">🔴 High</span></div>
+        <div class="metric"><span class="metric-label">✅ Cal.com</span><span class="badge badge-green">Done</span></div>
+        <div class="metric"><span class="metric-label">✅ Stripe</span><span class="badge badge-green">Live</span></div>
+        <div class="metric"><span class="metric-label">✅ Cold email templates</span><span class="badge badge-green">Done</span></div>
         <div class="metric"><span class="metric-label">LinkedIn profile</span><span class="badge badge-red">🔴 High</span></div>
-        <div class="metric"><span class="metric-label">Cal.com + Stripe</span><span class="badge badge-red">🔴 High</span></div>
         <div class="metric"><span class="metric-label">Start outreach</span><span class="badge badge-red">🔴 High</span></div>
+        <div class="metric"><span class="metric-label">DNS (aimythe.com)</span><span class="badge badge-red">🔴 High</span></div>
         <div class="metric"><span class="metric-label">Reddit API creds</span><span class="badge badge-yellow">🟡 Medium</span></div>
         <div class="metric"><span class="metric-label">VPS firewall</span><span class="badge badge-yellow">🟡 Medium</span></div>
       </div>
@@ -388,6 +394,200 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ── FILES ── -->
+  <div id="files" class="section">
+    <div class="page-title">Files</div>
+    <div class="page-sub">All project files organised by category · workspace: /data/.openclaw/workspace/business/</div>
+
+    <style>
+      .file-section { margin-bottom: 28px; }
+      .file-section-title {
+        font-size: 11px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.1em; color: #6366f1; margin-bottom: 12px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .file-section-title::after {
+        content: ''; flex: 1; height: 1px; background: #1e1e2e;
+      }
+      .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+      .file-card {
+        background: #13131c; border: 1px solid #1e1e2e; border-radius: 10px;
+        padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px;
+        transition: border-color 0.15s;
+      }
+      .file-card:hover { border-color: #6366f1; }
+      .file-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+      .file-info { flex: 1; min-width: 0; }
+      .file-name { font-size: 13px; font-weight: 600; color: #e2e2e8; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .file-desc { font-size: 11px; color: #444; line-height: 1.5; }
+      .file-path { font-size: 10px; color: #2a2a3a; margin-top: 4px; font-family: monospace; }
+      .file-badge { flex-shrink: 0; }
+    </style>
+
+    <!-- STRATEGY -->
+    <div class="file-section">
+      <div class="file-section-title">📋 Strategy & Planning</div>
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-icon">📄</div>
+          <div class="file-info">
+            <div class="file-name">PLAN.md</div>
+            <div class="file-desc">Full business plan — agency model, pricing, GTM, milestones, KPIs</div>
+            <div class="file-path">business/PLAN.md</div>
+          </div>
+          <span class="badge badge-yellow file-badge">Core</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">🎨</div>
+          <div class="file-info">
+            <div class="file-name">brand.md</div>
+            <div class="file-desc">Brand identity — name, positioning, tagline, voice, LinkedIn copy</div>
+            <div class="file-path">business/brand.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">📅</div>
+          <div class="file-info">
+            <div class="file-name">calcom-setup.md</div>
+            <div class="file-desc">Cal.com configuration guide and booking link setup notes</div>
+            <div class="file-path">business/calcom-setup.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTREACH -->
+    <div class="file-section">
+      <div class="file-section-title">📨 Outreach & Lead Generation</div>
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-icon">📧</div>
+          <div class="file-info">
+            <div class="file-name">cold-email-templates.md</div>
+            <div class="file-desc">3 cold email templates (agency, SaaS ops, e-commerce) + follow-up sequence + subject line variants</div>
+            <div class="file-path">business/outreach/cold-email-templates.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">💼</div>
+          <div class="file-info">
+            <div class="file-name">linkedin-sequences.md</div>
+            <div class="file-desc">5 LinkedIn outreach sequences (A–E) — connection requests + 2 follow-ups per persona</div>
+            <div class="file-path">business/outreach/linkedin-sequences.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">🗂️</div>
+          <div class="file-info">
+            <div class="file-name">prospect-list.md</div>
+            <div class="file-desc">20 representative ICP profiles across 5 buyer personas with sequence assignments</div>
+            <div class="file-path">business/outreach/prospect-list.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">🔍</div>
+          <div class="file-info">
+            <div class="file-name">lead-list-2026-03-25.md</div>
+            <div class="file-desc">30 real prospects — Column A/B/C with LinkedIn search strings, pain points, and personalized connection templates</div>
+            <div class="file-path">business/prospects/lead-list-2026-03-25.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Ready</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">📊</div>
+          <div class="file-info">
+            <div class="file-name">tracker.md</div>
+            <div class="file-desc">Pipeline stage tracker — Sent → Accepted → Replied → Call → Proposal → Closed</div>
+            <div class="file-path">business/prospects/tracker.md</div>
+          </div>
+          <span class="badge badge-yellow file-badge">In Use</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND -->
+    <div class="file-section">
+      <div class="file-section-title">🎨 Brand Assets</div>
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-icon">✉️</div>
+          <div class="file-info">
+            <div class="file-name">email-signature.html</div>
+            <div class="file-desc">Branded HTML email signature — Floyd · AI Automation Consultant · Aimythe (paste into Gmail)</div>
+            <div class="file-path">business/brand/email-signature.html</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEBSITE -->
+    <div class="file-section">
+      <div class="file-section-title">🌐 Website</div>
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-icon">🏠</div>
+          <div class="file-info">
+            <div class="file-name">index.html (EN)</div>
+            <div class="file-desc">Main landing page — aimythe.com · Services, pricing, how it works, social proof, CTA</div>
+            <div class="file-path">business/site/index.html</div>
+          </div>
+          <span class="badge badge-green file-badge">Live</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">🇫🇷</div>
+          <div class="file-info">
+            <div class="file-name">index.html (FR)</div>
+            <div class="file-desc">French version of the landing page — aimythe.com/fr/</div>
+            <div class="file-path">business/site/fr/index.html</div>
+          </div>
+          <span class="badge badge-green file-badge">Live</span>
+        </div>
+        <div class="file-card">
+          <div class="file-icon">📊</div>
+          <div class="file-info">
+            <div class="file-name">intro-ai-fr.html</div>
+            <div class="file-desc">14-slide interactive AI presentation for French-speaking non-technical audiences — with ROI calculator</div>
+            <div class="file-path">business/presentations/intro-ai-fr.html</div>
+          </div>
+          <span class="badge badge-green file-badge">Live</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVERY -->
+    <div class="file-section">
+      <div class="file-section-title">📦 Client Delivery</div>
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-icon">🚀</div>
+          <div class="file-info">
+            <div class="file-name">onboarding.md</div>
+            <div class="file-desc">Client onboarding process — discovery → audit → build → retainer handoff</div>
+            <div class="file-path">business/delivery/onboarding.md</div>
+          </div>
+          <span class="badge badge-green file-badge">Done</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="card" style="margin-top: 8px;">
+      <div class="card-title">Quick Links</div>
+      <div class="metric"><span class="metric-label">🌐 Live site</span><span class="metric-value"><a href="https://aimythe.com" target="_blank" style="color:#6366f1">aimythe.com</a></span></div>
+      <div class="metric"><span class="metric-label">🇫🇷 French site</span><span class="metric-value"><a href="https://aimythe.com/fr/" target="_blank" style="color:#6366f1">aimythe.com/fr/</a></span></div>
+      <div class="metric"><span class="metric-label">📅 Booking link</span><span class="metric-value"><a href="https://cal.com/floyd-aimythe/discovery" target="_blank" style="color:#6366f1">cal.com/floyd-aimythe/discovery</a></span></div>
+      <div class="metric"><span class="metric-label">💳 Stripe</span><span class="metric-value"><a href="https://dashboard.stripe.com" target="_blank" style="color:#6366f1">dashboard.stripe.com</a></span></div>
+      <div class="metric"><span class="metric-label">📊 AI Presentation</span><span class="metric-value"><a href="https://pabyngono-claw.github.io/aimythe-site/presentation-ia.html" target="_blank" style="color:#6366f1">View →</a></span></div>
+      <div class="metric"><span class="metric-label">💻 GitHub repo</span><span class="metric-value"><a href="https://github.com/pabyngono-claw/aimythe-site" target="_blank" style="color:#6366f1">pabyngono-claw/aimythe-site</a></span></div>
     </div>
   </div>
 
